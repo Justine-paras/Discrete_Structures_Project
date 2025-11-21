@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DLSU Toolkit</title>
+  <link rel="stylesheet" href="home.css">
+  <link href="https://fonts.googleapis.com/css2?family=Alumni+Sans&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="toolkit">
+    <h1>Hello, Lasallian! What would you like to do today?</h1>
+
+    <div class="options">
+      <div class="card green" id="navBtn">
+        <img src="images/compass-icon.png" alt="Campus Navigator">
+        <h2>Campus Navigator</h2>
+        <p>Find the shortest route between buildings.</p>
+      </div>
+
+      <div class="card blue" id="scholarshipBtn">
+        <img src="images/graduation-icon.png" alt="Scholarship Checker">
+        <h2>Scholarship Checker</h2>
+        <p>Check eligibility for various scholarships.</p>
+      </div>
+
+      <div class="card red" id="parkingBtn">
+        <img src="images/parking-icon.png" alt="Parking Allocation">
+        <h2>Parking Allocation</h2>
+        <p>Secure and manage your parking slot efficiently.</p>
+      </div>
+    </div>
+
+    <footer>v1.0 | 2025 DLSUToolkit</footer>
+  </div>
+
+  <script>
+  window.onload = () => {
+    document.getElementById("navBtn").addEventListener("click", () => {
+      pywebview.api.open_navigation();
+    });
+
+    document.getElementById("scholarshipBtn").addEventListener("click", () => {
+      pywebview.api.open_scholarship();
+    });
+
+    document.getElementById("parkingBtn").addEventListener("click", () => {
+      pywebview.api.open_parking();
+    });
+  };
+</script>
+</body>
+</html>
