@@ -30,5 +30,7 @@ class API:
     def open_parking(self):
         threading.Timer(0.1, lambda: webview.windows[0].load_url('frontend/parking.html')).start()
         return "parking loaded"
+    
+    # This is a test change
 
 
