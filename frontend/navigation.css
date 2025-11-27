@@ -11,23 +11,46 @@ body {
 
 /* HEADER */
 .topbar {
-    background: #242323;
-    color: rgb(255, 255, 255);
-    padding: 15px 30px;
-    margin: 20px 30px 0 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-radius: 15px 15px 15px 15px;
+  background: #242323;
+  color: #fff;
+  padding: 5px 15px;
+  margin: 20px 30px 0 30px;
+  display: flex;
+  justify-content: space-between; /* left-group on left, button on right */
+  align-items: center;
+  border-radius: 8px;
 }
 
-.topbar h1 {
-    margin: 0;
-    font-size: 32px;
+.left-group {
+  display: flex;          /* logo and title side by side */
+  align-items: center;    /* vertically aligned */
 }
 
 .logo {
-    height: 45px;
+  height: 45px;
+  margin-right: 10px;     /* space between logo and title */
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.highlight {
+  color: #32722e; /* Green color for "DLSUD" */
+}
+
+.home-button {
+  background: none;       /* remove default button background */
+  border: none;           /* remove border */
+  cursor: pointer;        /* pointer on hover */
+  padding: 0;             /* remove extra spacing */
+}
+
+.home-icon {
+  height: 30px;           /* adjust size */
+  width: 30px;
 }
 
 /* MAIN LAYOUT */
@@ -68,9 +91,6 @@ button {
     cursor: pointer;
 }
 
-button:hover {
-    background: #3b7a3c;
-}
 
 /* RIGHT PANEL */
 .results {
@@ -110,10 +130,6 @@ button:hover {
 /* FOOTER */
 footer {
     text-align: center;
-    padding: 20px;
-    color: #666;
-    font-size: 14px;
-    margin-top: 40px;
-    position: fixed;
-    width: 100%;
+  padding: 20px;
+  color: #888;
 }

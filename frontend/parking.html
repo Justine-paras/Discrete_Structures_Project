@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>DLSUD Parking Allocation System</title>
+  <link rel="stylesheet" href="parking.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Alumni+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="left-group">
+      <img src="images/dlsud-logo.png" class="logo" alt="DLSUD Logo" />
+      <h1 class="title">
+        <span class="highlight">DLSUD</span> Parking Allocation System
+      </h1>
+    </div>
+    <button id="homeBtn" class="home-button">
+      <img src="images/home-icon.png" alt="Home" class="home-icon" />
+    </button>
+  </header>
+
+  <main class="container">
+
+    <!-- LEFT PANEL -->
+    <section class="left-panel card">
+
+      <label class="field-label">Select Parking Region</label>
+      <div class="select-box">
+        <select>
+          <option>West Campus</option>
+          <option>East Campus</option>
+        </select>
+      </div>
+
+      <label class="field-label">Select Parking Lot</label>
+      <div class="select-box">
+        <select>
+          <option>Magdiwang (Gate 3) Parking</option>
+          <option>Gate 1 Parking</option>
+        </select>
+      </div>
+
+      <div class="buttons">
+        <button class="park-btn"><span>🅿</span> Park Vehicle</button>
+        <button class="leave-btn"><span>🚗</span> Leave Parking</button>
+      </div>
+    </section>
+
+    <!-- RIGHT PANEL -->
+    <section class="right-panel card">
+
+      <h2 class="status-title">Real-Time Parking Status</h2>
+
+      <div class="status-area">
+
+        <!-- WEST STATUS -->
+        <div class="status-card west">
+          <h3>West Campus</h3>
+          <div class="gauge-container">
+  <div class="gauge-fill" style="--percentage: 40;"></div>
+  <div class="gauge-cover">155</div>
+</div>
+          <p class="capacity">155 / 350</p>
+        </div>
+
+        <!-- EAST STATUS -->
+        <div class="status-card east">
+          <h3>East Campus</h3>
+          <div class="gauge blue-gauge">
+            <div class="gauge-value-full">FULL</div>
+            <div class="gauge-sub">CLOSED</div>
+          </div>
+          <p class="capacity">350 / 350</p>
+        </div>
+
+      </div>
+
+      <p class="result"><strong>Successfully Parked:</strong> Magdiwang (Gate 3)</p>
+
+    </section>
+  </main>
+
+  <footer class="footer">v1.0 | ©2025 DLSUDToolkit</footer>
+
+</body>
+</html>

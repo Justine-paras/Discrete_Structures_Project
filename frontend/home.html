@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DLSU Toolkit</title>
+  <link rel="stylesheet" href="home.css">
+  <link href="https://fonts.googleapis.com/css2?family=Alumni+Sans&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="toolkit">
+    <div class="header-row">
+    <h1>
+      Hello, Lasallian! <br>
+      <span class="subtext">What would you like to do today?</span>
+    </h1>
+
+    <button id="openOverlay" class="logo-btn">
+      <img src="images/readme.png" alt="Open Overlay">
+    </button>
+  </div>
+
+    <div class="options">
+      <div class="card green" id="navBtn">
+        <img src="images/compass-icon.png" alt="Campus Navigator">
+        <h2>Campus Navigator</h2>
+        <p>Find the shortest route between buildings.</p>
+      </div>
+
+      <div class="card blue" id="scholarshipBtn">
+        <img src="images/graduation-icon.png" alt="Scholarship Checker">
+        <h2>Scholarship Checker</h2>
+        <p>Check eligibility for various scholarships.</p>
+      </div>
+
+      <div class="card red" id="parkingBtn">
+        <img src="images/parking-icon.png" alt="Parking Allocation">
+        <h2>Parking Allocation</h2>
+        <p>Secure and manage your parking slot efficiently.</p>
+      </div>
+    </div>
+
+    <footer>v1.0 | 2025 DLSUToolkit</footer>
+  </div>
+
+  <div id="overlay" class="overlay">
+  <div class="overlay-content">
+
+    <span id="closeOverlay" class="close-btn">&times;</span>
+    <h2>About DLSUD Campus Navigation System</h2>
+
+    <p><strong>DLSUD Campus Navigation System</strong><br>
+    By The Three Musketeers – Discrete Structures I</p>
+
+    <h3>Overview</h3>
+    <p>Welcome to the DLSUD Campus Navigation System! This prototype demonstrates how Discrete Structures can solve real-world campus problems. Using Graph Theory, Propositional Logic, and Set Theory, the system provides tools for navigation, scholarship evaluation, and parking management.</p>
+
+    <h3>Features</h3>
+
+    <h4>Campus Navigation</h4>
+    <ul>
+      <li>Computes the shortest walking paths between major campus buildings using Dijkstra’s Algorithm.</li>
+      <li>Highlights the route on the interactive campus map.</li>
+      <li>Helps new students and visitors find their way efficiently.</li>
+    </ul>
+
+    <h4>Scholarship Eligibility Checker</h4>
+    <ul>
+      <li>Evaluates your qualifications for academic, financial, and athletic scholarships.</li>
+      <li>Uses propositional logic to ensure fair and consistent results.</li>
+      <li>Shows which requirements are met and which are missing.</li>
+    </ul>
+
+    <h4>Campus Parking Allocation</h4>
+    <ul>
+      <li>Tracks parking slot availability in east and west lots.</li>
+      <li>Uses set operations to update occupancy and free slots in real time.</li>
+      <li>Simplifies parking decisions and saves time.</li>
+    </ul>
+
+    <h3>How to Use</h3>
+    <ul>
+      <li>Select the feature you want to use from the main menu.</li>
+      <li>Follow on-screen prompts to input buildings, scholarship info, or parking slots.</li>
+      <li>The system will display results clearly and visually, e.g., shortest paths or available slots.</li>
+    </ul>
+
+    <h3>Notes & Limitations</h3>
+    <ul>
+      <li>This is a prototype; only selected buildings and parking areas are included.</li>
+      <li>Features demonstrate educational applications of Discrete Structures rather than full-scale campus services.</li>
+    </ul>
+
+    <h3>Credits</h3>
+    <p>
+      Group Members: Ikpi, Ikpi Eteng | Paras, Justine Robert R. | Yang, Elisha L.<br>
+      Professor: Ma’am Erquita, Marnelli
+    </p>
+
+  </div>
+</div>
+
+  <script>
+window.onload = () => {
+
+  document.getElementById("navBtn").onclick = () => {
+    pywebview.api.open_navigation().then(response => {
+      console.log(response);
+    });
+  };
+
+  document.getElementById("scholarshipBtn").onclick = () => {
+    pywebview.api.open_scholarship().then(resp => console.log(resp));
+  };
+
+  document.getElementById("parkingBtn").onclick = () => {
+    pywebview.api.open_parking().then(resp => console.log(resp));
+  };
+
+};
+
+
+const overlay = document.getElementById("overlay");
+    const openBtn = document.getElementById("openOverlay");
+    const closeBtn = document.getElementById("closeOverlay");
+
+    openBtn.onclick = () => overlay.style.display = "flex";
+    closeBtn.onclick = () => overlay.style.display = "none";
+
+    overlay.onclick = (e) => {
+      if (e.target === overlay) overlay.style.display = "none";
+    };
+</script>
+</body>
+</html>

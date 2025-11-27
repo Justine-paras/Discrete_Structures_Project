@@ -3,14 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <title>DLSUD Campus Navigation</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="navigation.css" />
   <link href="https://fonts.googleapis.com/css2?family=Alumni+Sans&display=swap" rel="stylesheet">
 </head>
 <body>
   <!-- HEADER -->
   <header class="topbar">
-    <h1>DLSUD Campus Navigation System</h1>
-    <img src="images/dlsud-logo.png" class="logo" alt="DLSUD Logo">
+    <div class="left-group">
+    <img src="images/dlsud-logo.png" class="logo" alt="DLSUD Logo" />
+    <h1 class="title">
+  <span class="highlight">DLSUD</span> Campus Navigation System
+</h1>
+  </div>
+    <button id="homeBtn" class="home-button">
+  <img src="images/home-icon.png" alt="Home" class="home-icon" />
+</button>
   </header>
 
   <!-- MAIN CONTENT -->
@@ -32,7 +39,7 @@
         <option value="Library">Library</option>
         <option value="Church">Church</option>
         <option value="Museo">Museo</option>
-        <option value="Cafe">Cafe</option>
+        <option value="Cafe Museo">Cafe Museo</option>
         <option value="Dorm">Dorm</option>
         <option value="FS">FS</option>
         <option value="LDH">LDH</option>
@@ -64,7 +71,7 @@
         <option value="Library">Library</option>
         <option value="Church">Church</option>
         <option value="Museo">Museo</option>
-        <option value="Cafe">Cafe</option>
+        <option value="Cafe Museo">Cafe Museo</option>
         <option value="Dorm">Dorm</option>
         <option value="FS">FS</option>
         <option value="LDH">LDH</option>
@@ -100,46 +107,54 @@
 
   <!-- SCRIPT -->
   <script>
-    const startSelect = document.getElementById('start');
-    const endSelect = document.getElementById('end');
-    const computeBtn = document.getElementById('compute');
-    const routeDisplay = document.getElementById('route');
-    const distanceDisplay = document.getElementById('distance');
+    document.addEventListener("DOMContentLoaded", () => {
+  const startSelect = document.getElementById('start');
+  const endSelect = document.getElementById('end');
+  const computeBtn = document.getElementById('compute');
+  const routeDisplay = document.getElementById('route');
+  const distanceDisplay = document.getElementById('distance');
+  const homeBtn = document.getElementById("homeBtn");
 
-    computeBtn.addEventListener('click', async () => {
-      const start = startSelect.value;
-      const end = endSelect.value;
+  computeBtn.addEventListener('click', async () => {
+    const start = startSelect.value;
+    const end = endSelect.value;
 
-      if (!start || !end || start === end) {
-        routeDisplay.textContent = "Please select two different locations.";
+    if (!start || !end || start === end) {
+      routeDisplay.textContent = "Please select two different locations.";
+      routeDisplay.style.color = "#cc0000";
+      distanceDisplay.textContent = "N/A";
+      return;
+    }
+
+    routeDisplay.textContent = "Calculating route...";
+    routeDisplay.style.color = "#333";
+    distanceDisplay.textContent = "⏳";
+
+    try {
+      const result = await window.pywebview.api.get_shortest_path(start, end);
+
+      if (result.error) {
+        routeDisplay.textContent = result.error;
         routeDisplay.style.color = "#cc0000";
         distanceDisplay.textContent = "N/A";
-        return;
+      } else {
+        routeDisplay.textContent = result.path_string;
+        routeDisplay.style.color = "#2c5e2e";
+        distanceDisplay.textContent = `${result.distance} meters`;
       }
+    } catch (err) {
+      routeDisplay.textContent = "Error connecting to backend.";
+      routeDisplay.style.color = "#cc0000";
+      distanceDisplay.textContent = "N/A";
+      console.error(err);
+    }
+  });
 
-      routeDisplay.textContent = "Calculating route...";
-      routeDisplay.style.color = "#333";
-      distanceDisplay.textContent = "⏳";
-
-      try {
-        const result = await window.pywebview.api.get_shortest_path(start, end);
-
-        if (result.error) {
-          routeDisplay.textContent = result.error;
-          routeDisplay.style.color = "#cc0000";
-          distanceDisplay.textContent = "N/A";
-        } else {
-          routeDisplay.textContent = result.path_string;
-          routeDisplay.style.color = "#2c5e2e";
-          distanceDisplay.textContent = `${result.distance} meters`;
-        }
-      } catch (err) {
-        routeDisplay.textContent = "Error connecting to backend.";
-        routeDisplay.style.color = "#cc0000";
-        distanceDisplay.textContent = "N/A";
-        console.error(err);
-      }
-    });
+  homeBtn.addEventListener("click", () => {
+    window.location.href = "home.html"; 
+    // or "/" if homepage is root
+  });
+});
   </script>
 </body>
 </html>

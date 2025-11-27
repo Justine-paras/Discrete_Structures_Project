@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>DLSUD Scholarship Eligibility Checker</title>
+  <link rel="stylesheet" href="scholarship.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Alumni+Sans&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- HEADER -->
+  <header class="topbar">
+    <div class="left-group">
+      <img src="images/dlsud-logo.png" class="logo" alt="DLSUD Logo" />
+      <h1 class="title">
+        <span class="highlight">DLSUD</span> Scholarship Eligibility Checker
+      </h1>
+    </div>
+    <button id="homeBtn" class="home-button">
+      <img src="images/home-icon.png" alt="Home" class="home-icon" />
+    </button>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="container">
+    <h2>Check Your Eligibility Status</h2>
+    <div class="content-box">
+      <div class="form-section">
+        <label for="scholarshipType">1. Choose your Target Scholarship</label>
+        <select id="scholarshipType" onchange="loadRequirements()">
+          <option value="">select</option>
+          <option value="academic">Academic Scholarship</option>
+          <option value="athletic">Athletic Scholarship</option>
+          <option value="financial">Financial Aid Scholarship</option>
+        </select>
+
+        <label>2. Requirements</label>
+        <div id="requirementsContainer" class="checkbox-group"></div>
+
+        <button class="check-button" onclick="checkStatus()">Check Status</button>
+      </div>
+
+      <div class="result-section">
+        <h3>Scholarship Eligibility Status</h3>
+        <div id="result">Please select a scholarship and requirements.</div>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    v1.0 | 2025 DLSUDtoolkit
+  </footer>
+
+  <!-- SCRIPT -->
+  <script>
+  function loadRequirements() {
+    const type = document.getElementById("scholarshipType").value;
+    const container = document.getElementById("requirementsContainer");
+    container.innerHTML = "";
+
+    if (type) {
+      window.pywebview.api.get_requirements(type).then(requirements => {
+        requirements.forEach(req => {
+          container.innerHTML += `
+            <label>
+              <input type="checkbox" name="${req.key}" /> ${req.label}
+            </label>
+          `;
+        });
+      });
+    }
+  }
+
+  function checkStatus() {
+    const type = document.getElementById("scholarshipType").value;
+    const inputs = document.querySelectorAll('input[type="checkbox"]');
+    const answers = {};
+
+    inputs.forEach(input => {
+      answers[input.name] = input.checked;
+    });
+
+    window.pywebview.api.check_eligibility(type, answers).then(response => {
+      document.getElementById("result").innerHTML = response;
+    });
+  }
+
+  // Home button navigation
+  document.getElementById("homeBtn").addEventListener("click", () => {
+    window.location.href = "home.html";
+  });
+</script>
+</body>
+</html>

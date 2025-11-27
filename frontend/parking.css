@@ -1,0 +1,225 @@
+/* Global -------------------------------------------------- */
+body {
+  margin: 0;
+  font-family: 'Alumni Sans', sans-serif;
+  background: #f5f5f5;
+  color: #2b2b2b;
+}
+
+/* Topbar -------------------------------------------------- */
+.topbar {
+  background: #242323;
+  color: #fff;
+  padding: 5px 15px;
+  margin: 20px 30px 0 30px;
+  display: flex;
+  justify-content: space-between; /* left-group on left, button on right */
+  align-items: center;
+  border-radius: 8px;
+}
+
+.left-group {
+  display: flex;          /* logo and title side by side */
+  align-items: center;    /* vertically aligned */
+}
+
+.logo {
+  height: 45px;
+  margin-right: 10px;     /* space between logo and title */
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.highlight {
+  color: #32722e; /* Green color for "DLSUD" */
+}
+
+.home-button {
+  background: none;       /* remove default button background */
+  border: none;           /* remove border */
+  cursor: pointer;        /* pointer on hover */
+  padding: 0;             /* remove extra spacing */
+}
+
+.home-icon {
+  height: 30px;           /* adjust size */
+  width: 30px;
+}
+
+/* Layout -------------------------------------------------- */
+.container {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  padding: 40px;
+}
+
+.card {
+  background: white;
+  padding: 35px;
+  border-radius: 15px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+}
+
+/* Left Panel --------------------------------------------- */
+.left-panel {
+  width: 350px;
+}
+
+.field-label {
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.select-box {
+  margin-bottom: 25px;
+}
+
+select {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 25px;
+  border: 1px solid #ccc;
+  font-size: 18px;
+  outline: none;
+}
+
+.buttons {
+  display: flex;
+  gap: 15px;
+}
+
+.park-btn,
+.leave-btn {
+  flex: 1;
+  font-size: 20px;
+  border: none;
+  padding: 12px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.park-btn {
+  background: #7dbf69;
+  color: white;
+}
+
+.leave-btn {
+  background: #c34a4a;
+  color: white;
+}
+
+/* Right Panel -------------------------------------------- */
+.right-panel {
+  width: 500px;
+}
+
+.status-title {
+  margin-top: 0;
+  font-size: 32px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.status-area {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 25px;
+}
+
+/* Status Cards ------------------------------------------- */
+.status-card {
+  width: 45%;
+  text-align: center;
+}
+
+.status-card h3 {
+  margin: 0 0 10px;
+  font-size: 22px;
+}
+
+.gauge {
+  background: #e5e5e5;
+  border-radius: 15px;
+  padding: 25px 0;
+}
+
+.green-gauge { background: #b5d6a5; }
+.blue-gauge  { background: #76a7d6; }
+
+.gauge-value {
+  font-size: 50px;
+  font-weight: 600;
+}
+
+.gauge-value-full {
+  font-size: 42px;
+  font-weight: 700;
+}
+
+.gauge-sub {
+  font-size: 20px;
+}
+
+.capacity {
+  margin-top: 8px;
+  font-size: 18px;
+}
+
+.result {
+  text-align: center;
+  font-size: 20px;
+  margin-top: 15px;
+}
+
+.gauge-container {
+  width: 180px;
+  height: 90px;
+  border-radius: 180px 180px 0 0;
+  background: #ddd;
+  position: relative;
+  overflow: hidden;
+}
+
+.gauge-fill {
+  width: 180px;
+  height: 180px;
+  background: #7bbb6e;
+  border-radius: 50%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  
+  /* This controls the fill amount */
+  clip-path: polygon(0 100%, 100% 100%, 100% calc(100% - (var(--percentage) * 1%)), 0 calc(100% - (var(--percentage) * 1%)));
+}
+
+.gauge-cover {
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  width: 120px;
+  height: 60px;
+  border-radius: 120px 120px 0 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 32px;
+  font-weight: bold;
+}
+
+
+/* Footer -------------------------------------------------- */
+.footer {
+  text-align: center;
+  padding: 15px;
+  font-size: 18px;
+  opacity: 0.6;
+}

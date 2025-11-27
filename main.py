@@ -3,12 +3,17 @@ from toolkit_api import API  # Your custom logic lives here
 
 if __name__ == '__main__':
     api = API()
-    webview.create_window(
+    window = webview.create_window(
         title='DLSUD Toolkit',
-        url='home/home.html',
+        url='frontend/home.html',
         js_api=api,
         width=800,
-        height=520,
+        height=560,
         resizable=False
     )
-    webview.start(debug=True)
+
+    webview.start(debug=True) 
+
+
+
+    
