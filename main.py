@@ -9,7 +9,7 @@ if __name__ == '__main__':
         js_api=api,
         width=800,
         height=560,
-        resizable=False
+        resizable=True
     )
 
     webview.start(debug=True) 
