@@ -25,16 +25,16 @@ load_state()
 
 parking_lots = {
     "West": {
-        "Grandstand Parking": 80,
-        "ULS Parking": 60,
-        "Magdiwang (Gate 3) Parking": 40,
-        "Staff - Gregoria De Jesus Hall (GMH) Parking": 50
+        "Grandstand Parking": 10,
+        "ULS Parking": 10,
+        "Magdiwang (Gate 3) Parking": 10,
+        "Staff - Gregoria De Jesus Hall (GMH) Parking": 10
     },
     "East": {
-        "Staff - Ayuntamiento Parking": 50,
-        "Chapel Parking": 70,
-        "Magdalo (Gate 1) Parking": 60,
-        "Magpuri (Gate 2) Parking": 40
+        "Staff - Ayuntamiento Parking": 5,
+        "Chapel Parking": 5,
+        "Magdalo (Gate 1) Parking": 5,
+        "Magpuri (Gate 2) Parking": 5
     }
 }
 
@@ -57,11 +57,10 @@ def get_region_status():
             for region in parking_lots}
 
 def get_region_totals():
-    """Return used/total slots per region (like cardinality of sets)."""
     return {
         region: {
             "used": sum(occupied[lot] for lot in lots),
-            "total": sum(lots.values())
+            "total": sum(lots.values())  # This should always be > 0
         }
         for region, lots in parking_lots.items()
     }

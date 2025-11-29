@@ -25,7 +25,7 @@
     <h2>Check Your Eligibility Status</h2>
     <div class="content-box">
       <div class="form-section">
-        <label for="scholarshipType">1. Choose your Target Scholarship</label>
+        <label for="scholarshipType">Choose your Target Scholarship</label>
         <select id="scholarshipType" onchange="loadRequirements()">
           <option value="">select</option>
           <option value="academic">Academic Scholarship</option>
@@ -33,15 +33,19 @@
           <option value="financial">Financial Aid Scholarship</option>
         </select>
 
-        <label>2. Requirements</label>
+        <label id="requirementsLabel" style="display:none;">Select the requirements that apply to you.</label>
         <div id="requirementsContainer" class="checkbox-group"></div>
 
-        <button class="check-button" onclick="checkStatus()">Check Status</button>
+        <button id="actionButton" class="check-button" onclick="handleButtonClick()">Check Status</button>
+
       </div>
 
       <div class="result-section">
         <h3>Scholarship Eligibility Status</h3>
-        <div id="result">Please select a scholarship and requirements.</div>
+       <div id="result"></div>
+</div>
+
+
       </div>
     </div>
   </main>
@@ -56,7 +60,9 @@
   function loadRequirements() {
     const type = document.getElementById("scholarshipType").value;
     const container = document.getElementById("requirementsContainer");
+    const label = document.getElementById("requirementsLabel");
     container.innerHTML = "";
+
 
     if (type) {
       window.pywebview.api.get_requirements(type).then(requirements => {
@@ -67,23 +73,108 @@
             </label>
           `;
         });
+
+        if (requirements.length > 0) {
+          label.style.display = "block";
+        }
       });
     }
   }
+  function handleButtonClick() {
+  const button = document.getElementById("actionButton");
+
+  // If button currently says "Check Status"
+  if (button.innerText === "Check Status") {
+    checkStatus();           // run your existing function
+    button.innerText = "Clear";   // change button to Clear
+    button.classList.add("clear-mode"); // optional: change style
+  } 
+  // If button currently says "Clear"
+  else {
+    clearForm();             // run your clear function
+    button.innerText = "Check Status"; // switch back
+    button.classList.remove("clear-mode");
+  }
+}
+
 
   function checkStatus() {
-    const type = document.getElementById("scholarshipType").value;
-    const inputs = document.querySelectorAll('input[type="checkbox"]');
-    const answers = {};
+  const type = document.getElementById("scholarshipType").value;
+  const inputs = document.querySelectorAll('#requirementsContainer input[type="checkbox"]');
+  const resultDiv = document.getElementById("result"); // ✅ FIX
+  const answers = {};
 
-    inputs.forEach(input => {
-      answers[input.name] = input.checked;
-    });
+  inputs.forEach(input => {
+    answers[input.name] = input.checked;
+  });
 
-    window.pywebview.api.check_eligibility(type, answers).then(response => {
-      document.getElementById("result").innerHTML = response;
-    });
+  window.pywebview.api.check_eligibility(type, answers).then(response => {
+
+    console.log("PYTHON RESPONSE:", response);
+
+    // If Python returns a STRING
+    if (typeof response === "string") {
+
+  const txt = response.toLowerCase();
+
+  // Detect NOT eligible first
+  if (txt.includes("not eligible")) {
+    resultDiv.innerHTML = `
+      <div class="status not-eligible">
+        <div class="icon" style="font-size:40px;">❌</div>
+        <div class="message">${response}</div>
+      </div>
+    `;
   }
+  // Detect eligible next
+  else if (txt.includes("eligible")) {
+    resultDiv.innerHTML = `
+      <div class="status eligible">
+        <div class="icon" style="font-size:40px;">✅</div>
+        <div class="message">Good news! You're eligible!</div>
+      </div>
+    `;
+  } 
+  else {
+    // fallback (no keywords found)
+    resultDiv.innerHTML = response;
+  }
+
+  return; 
+}
+
+    // If Python returns an OBJECT (eligible + missing)
+    if (response.eligible) {
+      resultDiv.innerHTML = `
+        <div class="status eligible">
+          <div class="icon" style="font-size:40px;">✅</div>
+          <div class="message">Good news! You're eligible!</div>
+        </div>
+      `;
+    } else {
+      const missing = response.missing.map(item => `<li>${item}</li>`).join("");
+
+      resultDiv.innerHTML = `
+        <div class="status not-eligible">
+          <div class="icon" style="font-size:40px;">❌</div>
+          <div class="message">Sorry, you are not eligible.</div>
+          <p>You still need the following:</p>
+          <ul>${missing}</ul>
+        </div>
+      `;
+    }
+  });
+}
+
+
+ function clearForm() {
+  document.getElementById("scholarshipType").value = "";
+  document.getElementById("requirementsContainer").innerHTML = "";
+  document.getElementById("requirementsLabel").style.display = "none";
+  document.getElementById("result").innerHTML = "Please select a scholarship and requirements.";
+}
+
+
 
   // Home button navigation
   document.getElementById("homeBtn").addEventListener("click", () => {

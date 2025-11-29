@@ -26,18 +26,24 @@
     <!-- LEFT PANEL -->
     <section class="left-panel card">
 
-      <label class="field-label">Select Parking Region</label>
-      <div class="select-box">
-        <select id="regionSelect">
-          <option>West Campus</option>
-          <option>East Campus</option>
-        </select>
-      </div>
+      <label class="field-label">Parking Region</label>
+<div class="select-box">
+  <select id="regionSelect">
+    <!-- Placeholder option -->
+    <option value="" disabled selected>Please select a Region</option>
+    <!-- Real backend values -->
+    <option value="West">West Campus</option>
+    <option value="East">East Campus</option>
+  </select>
+</div>
 
-      <label class="field-label">Select Parking Lot</label>
-      <div class="select-box">
-        <select id="lotSelect"></select>
-      </div>
+<label class="field-label">Parking Lot</label>
+<div class="select-box">
+  <select id="lotSelect">
+    <!-- Placeholder option -->
+    <option value="" disabled selected>Please select a Lot</option>
+  </select>
+</div>
 
       <div class="buttons">
         <button class="park-btn" id="parkBtn"><span>🅿</span> Park Vehicle</button>
@@ -52,8 +58,8 @@
 
       <div class="status-area">
         <!-- WEST STATUS -->
-        <div class="status-card west">
-          <h3>West Campus</h3>
+        <div class="status-cardW west">
+          <h3 class = "color">West Campus</h3>
           <div class="gauge">
             <div class="gauge__body">
               <div class="gauge__fill"></div>
@@ -64,8 +70,8 @@
         </div>
 
         <!-- EAST STATUS -->
-        <div class="status-card east">
-          <h3>East Campus</h3>
+        <div class="status-cardE east">
+          <h3 class = "color">East Campus</h3>
           <div class="gauge">
             <div class="gauge__body">
               <div class="gauge__fill"></div>
@@ -88,10 +94,19 @@
   // GAUGE CONTROL
   // ===========================
   function setGaugeValue(gauge, value) {
-    if (value < 0 || value > 1) return;
-    gauge.querySelector(".gauge__fill").style.transform = `rotate(${value / 2}turn)`;
-    gauge.querySelector(".gauge__cover").textContent = `${Math.round(value * 100)}%`;
+  if (value < 0 || value > 1) return;
+
+  gauge.querySelector(".gauge__fill").style.transform = `rotate(${value / 2}turn)`;
+
+  const cover = gauge.querySelector(".gauge__cover");
+  if (value === 0) {
+    cover.textContent = "EMPTY";
+  } else if (value === 1) {
+    cover.textContent = "FULL";
+  } else {
+    cover.textContent = `${Math.round(value * 100)}%`;
   }
+}
 
   // ===========================
   // NORMALIZE REGION NAMES
@@ -106,84 +121,166 @@
   // REFRESH UI FROM BACKEND
   // ===========================
   async function refreshUI() {
-    const status = await window.pywebview.api.get_parking_status();
+  const status = await window.pywebview.api.get_parking_status();
 
-    // WEST
-    document.querySelector(".west .capacity").textContent =
-      `${status["West"].used} / ${status["West"].total}`;
-    setGaugeValue(document.querySelector(".west .gauge"), status["West"].used / status["West"].total);
+  // WEST
+  const westUsed = status["West"].used;
+  const westTotal = status["West"].total;
+  const westGauge = document.querySelector(".west .gauge");
+  document.querySelector(".west .capacity").textContent = `${westUsed} / ${westTotal}`;
+  setGaugeValue(westGauge, westTotal > 0 ? westUsed / westTotal : 0);
 
-    // EAST
-    document.querySelector(".east .capacity").textContent =
-      `${status["East"].used} / ${status["East"].total}`;
-    setGaugeValue(document.querySelector(".east .gauge"), status["East"].used / status["East"].total);
-  }
+  // EAST
+  const eastUsed = status["East"].used;
+  const eastTotal = status["East"].total;
+  const eastGauge = document.querySelector(".east .gauge");
+  document.querySelector(".east .capacity").textContent = `${eastUsed} / ${eastTotal}`;
+  setGaugeValue(eastGauge, eastTotal > 0 ? eastUsed / eastTotal : 0);
+}
 
-  // ===========================
-  // LOAD LOTS DYNAMICALLY
-  // ===========================
-  async function loadLots(regionText) {
-    const region = normalizeRegion(regionText);
-    const lots = await window.pywebview.api.get_parking_lots(region);
+// ===========================
+// LOAD LOTS DYNAMICALLY
+// ===========================
+async function loadLots(regionText) {
+  const region = normalizeRegion(regionText);
+  const lots = await window.pywebview.api.get_parking_lots(region);
 
-    const lotSelect = document.getElementById("lotSelect");
-    lotSelect.innerHTML = "";
-    for (const lot in lots) {
-      const opt = document.createElement("option");
-      opt.value = lot;
-      opt.textContent = lot;
-      lotSelect.appendChild(opt);
+  const lotSelect = document.getElementById("lotSelect");
+  const previousSelection = lotSelect.value;
+
+  lotSelect.innerHTML = "";
+
+  // Add placeholder
+  const placeholder = document.createElement("option");
+  placeholder.value = "";
+  placeholder.textContent = "Please select Lot";
+  placeholder.disabled = true;
+  lotSelect.appendChild(placeholder);
+
+  for (const lotName in lots) {
+    const lot = lots[lotName];
+    const opt = document.createElement("option");
+    opt.value = lotName;
+
+    // Show status
+    opt.textContent =
+      lot.used >= lot.capacity
+        ? `${lotName} (FULL)`
+        : `${lotName} (${lot.used} / ${lot.capacity})`;
+
+    // Add data attributes for logic
+    opt.dataset.used = lot.used;
+    opt.dataset.capacity = lot.capacity;
+    opt.dataset.full = String(lot.used >= lot.capacity);
+
+    // Restore previous selection
+    if (lotName === previousSelection) {
+      opt.selected = true;
     }
+
+    lotSelect.appendChild(opt);
   }
+
+  updateButtonStates(); // refresh button logic
+}
+
+function updateButtonStates() {
+  const lotSelect = document.getElementById("lotSelect");
+  const parkBtn = document.getElementById("parkBtn");
+  const leaveBtn = document.getElementById("leaveBtn");
+
+  const selectedOpt = lotSelect.options[lotSelect.selectedIndex];
+
+  // ✅ Always enable Park if a lot is selected — let click handler decide if it's full
+  parkBtn.disabled = !selectedOpt;
+
+  // ✅ Enable Leave if a lot is selected
+  leaveBtn.disabled = !selectedOpt;
+}
 
   // ===========================
   // BUTTON EVENTS
   // ===========================
   document.getElementById("parkBtn").addEventListener("click", async function () {
-    const regionText = document.getElementById("regionSelect").value;
-    const region = normalizeRegion(regionText);
-    const lot = document.getElementById("lotSelect").value;
+  const region = document.getElementById("regionSelect").value;
+  const lot = document.getElementById("lotSelect").value;
 
-    const result = await window.pywebview.api.park(region, lot);
+  if (!region || !lot) {
+    document.querySelector(".result").innerHTML =
+      `<strong>Status:</strong> Please select Region and Lot`;
+    return;
+  }
 
-    if (result.status === "FULL") {
-      document.querySelector(".result").innerHTML = `<strong>Status:</strong> Parking Full`;
-    } else {
-      document.querySelector(".result").innerHTML = `<strong>Successfully Parked:</strong> ${lot}`;
-    }
+  // Get selected lot info from dropdown
+  const selectedOpt = document.getElementById("lotSelect").options[
+    document.getElementById("lotSelect").selectedIndex
+  ];
+  const used = Number(selectedOpt.dataset.used);
+  const capacity = Number(selectedOpt.dataset.capacity);
 
-    refreshUI();
-  });
+  // If lot is full, show message immediately
+  if (used >= capacity) {
+    document.querySelector(".result").innerHTML =
+      `<strong>Status:</strong> Lot is FULL — cannot park`;
+    return;
+  }
+
+  // Otherwise call backend
+  const result = await window.pywebview.api.park(region, lot);
+
+  if (result.status === "FULL") {
+    document.querySelector(".result").innerHTML =
+      `<strong>Status:</strong> Lot became FULL — parking denied`;
+  } else {
+    document.querySelector(".result").innerHTML =
+      `<strong>Successfully Parked:</strong> ${lot}`;
+  }
+
+  await refreshUI();
+  await loadLots(region);
+});
 
   document.getElementById("leaveBtn").addEventListener("click", async function () {
-    const lot = document.getElementById("lotSelect").value;
-    const result = await window.pywebview.api.leave(lot);
+  const region = document.getElementById("regionSelect").value;
+  const lot = document.getElementById("lotSelect").value;
 
-    if (result.status === "EMPTY") {
-      document.querySelector(".result").innerHTML = `<strong>Status:</strong> Lot already empty`;
-    } else {
-      document.querySelector(".result").innerHTML = `<strong>Vehicle Left:</strong> ${lot}`;
-    }
+  if (!region || !lot) {
+    document.querySelector(".result").innerHTML = `<strong>Status:</strong> Please select Region and Lot`;
+    return;
+  }
 
-    refreshUI();
-  });
+  const result = await window.pywebview.api.leave(lot);
+
+  if (result.status === "EMPTY") {
+    document.querySelector(".result").innerHTML = `<strong>Status:</strong> Lot already empty`;
+  } else {
+    document.querySelector(".result").innerHTML = `<strong>Vehicle Left:</strong> ${lot}`;
+  }
+
+  await refreshUI();
+  await loadLots(region);
+});
 
   // HOME BUTTON
   document.getElementById("homeBtn").addEventListener("click", () => {
     window.location.href = "home.html";
   });
 
-  // ===========================
-  // INITIAL LOAD
-  // ===========================
-  window.onload = async () => {
-    await refreshUI();
-    await loadLots(document.getElementById("regionSelect").value);
-  };
+// ===========================
+// INITIAL LOAD
+// ===========================
+window.onload = async () => {
+  await refreshUI();
+  await loadLots(document.getElementById("regionSelect").value);
+  updateButtonStates(); // make sure buttons are correct on startup
+};
 
-  document.getElementById("regionSelect").addEventListener("change", (e) => {
-    loadLots(e.target.value);
-  });
+document.getElementById("regionSelect").addEventListener("change", async (e) => {
+  await loadLots(e.target.value);
+  updateButtonStates();
+});
+
+document.getElementById("lotSelect").addEventListener("change", updateButtonStates);
 </script>
 
 </body>

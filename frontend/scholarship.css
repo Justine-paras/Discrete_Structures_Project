@@ -103,3 +103,31 @@ select {
 .result {
   font-size: 30px;
 }
+.status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px;
+  border-radius: 10px;
+  margin-top: 10px;
+  font-size: 18px;
+}
+
+.status.eligible {
+  background: #e8fbe8;
+  border: 2px solid #2ecc71;
+}
+
+.status.not-eligible {
+  background: #fdeaea;
+  border: 2px solid #e74c3c;
+}
+
+.status .icon {
+  font-size: 40px;
+}
+
+.status ul {
+  margin-top: 10px;
+  margin-left: 50px;
+}
